@@ -29,6 +29,31 @@
   a{color:inherit;} button{font-family:inherit;cursor:pointer;}
 
   #login-screen{position:fixed;inset:0;background:radial-gradient(circle at 20% 20%, var(--navy-800), var(--navy-950) 65%);display:flex;align-items:center;justify-content:center;z-index:200;}
+  #welcome-screen{position:fixed;inset:0;z-index:220;}
+  .welcome-bg{position:absolute;inset:0;background:linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 45%, var(--teal-600) 150%);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .welcome-orb{position:absolute;border-radius:50%;background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);pointer-events:none;}
+  .welcome-orb-1{width:520px;height:520px;top:-180px;right:-140px;}
+  .welcome-orb-2{width:380px;height:380px;bottom:-160px;left:-100px;background:radial-gradient(circle, rgba(57,148,141,.25), transparent 70%);}
+  .welcome-bars{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:10px;height:70px;opacity:.35;}
+  .welcome-bars span{display:block;width:10px;border-radius:4px 4px 0 0;background:linear-gradient(180deg, #dce6ee, transparent);animation:welcomeBar 2.4s ease-in-out infinite;}
+  .welcome-bars span:nth-child(1){height:30%;animation-delay:0s;}
+  .welcome-bars span:nth-child(2){height:55%;animation-delay:.15s;}
+  .welcome-bars span:nth-child(3){height:80%;animation-delay:.3s;}
+  .welcome-bars span:nth-child(4){height:45%;animation-delay:.45s;}
+  .welcome-bars span:nth-child(5){height:65%;animation-delay:.6s;}
+  .welcome-bars span:nth-child(6){height:35%;animation-delay:.75s;}
+  @keyframes welcomeBar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.25);}}
+  .welcome-card{position:relative;z-index:2;text-align:center;color:#fff;max-width:640px;padding:48px 40px;animation:welcomeFadeIn .6s ease;}
+  @keyframes welcomeFadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .welcome-emblema{width:54px;height:auto;margin-bottom:16px;opacity:.92;}
+  .welcome-icone{font-size:52px;margin-bottom:6px;}
+  .welcome-saudacao{font-size:19px;color:#a9c1d9;font-weight:600;letter-spacing:.02em;}
+  .welcome-nome{font-size:36px;font-weight:800;margin:2px 0 16px;line-height:1.2;}
+  .welcome-data{font-size:16px;color:#dce6ee;margin-bottom:10px;}
+  .welcome-desejo{font-size:14.5px;color:#a9c1d9;font-style:italic;margin-bottom:8px;}
+  .welcome-aniversario{margin:18px auto;max-width:460px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;}
+  .welcome-msg{margin:10px auto 0;max-width:460px;background:rgba(255,255,255,.07);border-radius:12px;padding:10px 16px;font-size:13.5px;color:#dce6ee;text-align:left;}
+  .welcome-botao{margin-top:26px;padding:12px 30px;font-size:14.5px;}
   .login-box{width:340px;background:#fff;border-radius:14px;padding:30px 28px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center;}
   .login-box .tag{display:inline-block;background:var(--brick-600);color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;padding:2px 7px;border-radius:4px;margin-bottom:10px;}
   .login-box .tag-lg{display:block;font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;font-size:38px;letter-spacing:.02em;color:var(--brick-600);line-height:1;margin-bottom:6px;}
@@ -282,6 +307,27 @@
   </div>
 </div>
 
+<div id="welcome-screen" style="display:none;">
+  <div class="welcome-bg">
+    <div class="welcome-orb welcome-orb-1"></div>
+    <div class="welcome-orb welcome-orb-2"></div>
+    <div class="welcome-bars">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="welcome-card">
+      <img src="" id="welcome-emblema" alt="Emblema do Estado da Bahia" class="welcome-emblema">
+      <div class="welcome-icone" id="welcome-icone">&#9728;&#65039;</div>
+      <div class="welcome-saudacao" id="welcome-saudacao">Bom dia,</div>
+      <div class="welcome-nome" id="welcome-nome">—</div>
+      <div class="welcome-data" id="welcome-data">—</div>
+      <div class="welcome-desejo">Desejamos um ótimo dia de trabalho!</div>
+      <div class="welcome-aniversario" id="welcome-aniversario" style="display:none;"></div>
+      <div id="welcome-mensagens"></div>
+      <button class="btn brick welcome-botao" onclick="fecharBoasVindasEEntrar()">Entrar no sistema &#8594;</button>
+    </div>
+  </div>
+</div>
+
 <div id="tv-screen" style="display:none;">
   <div class="tv-topbar">
     <div class="tv-brand">SCA <span>Sistema de Controle de Atendimento</span></div>
@@ -336,6 +382,9 @@
 
     <!-- ============ RECEPÇÃO ============ -->
     <section class="view active" id="view-recepcao">
+      <div class="ano-badge" id="rec-ano-badge" style="display:inline-flex;align-items:center;gap:6px;background:var(--navy-100);color:var(--navy-800);font-weight:700;font-size:12.5px;padding:6px 12px;border-radius:20px;margin-bottom:12px;">
+        &#128197; Ano de operação: <span id="rec-ano-atual">—</span>
+      </div>
       <div class="pagehead">
         <div>
           <div class="eyebrow">Triagem</div>
@@ -372,8 +421,8 @@
               <div class="field"><label for="c-sexo">Sexo</label>
                 <select id="c-sexo"><option value="">Não informado</option><option value="F">Feminino</option><option value="M">Masculino</option></select>
               </div>
-              <div class="field"><label for="c-modalidade">Modalidade (se REDA)</label>
-                <select id="c-modalidade"><option value="">—</option><option value="Seletivo">Seletivo</option><option value="Emergencial">Emergencial</option></select>
+              <div class="field"><label for="c-modalidade">Modalidade</label>
+                <input type="text" id="c-modalidade" placeholder="Ex: Seletivo, Emergencial, Licenciado...">
               </div>
             </div>
             <div class="row">
@@ -624,6 +673,7 @@
             <div class="field"><label for="tec-mesa">Número da mesa</label><input type="text" id="tec-mesa" placeholder="Ex: 3"></div>
           </div>
           <div class="field"><label for="tec-email">E-mail *</label><input type="email" id="tec-email" placeholder="usado para recuperação de senha" oninput="this.value=this.value.toLowerCase()"></div>
+          <div class="field"><label for="tec-nascimento">Data de nascimento *</label><input type="date" id="tec-nascimento"></div>
           <div class="row">
             <div class="field"><label for="tec-user">Usuário de acesso *</label><input type="text" id="tec-user" oninput="this.value=this.value.toLowerCase()"></div>
           </div>
@@ -739,6 +789,12 @@
           <input type="file" id="import-agendamentos-file" accept=".xlsx,.xls,.csv" onchange="importarAgendamentosXLSX(this.files[0])">
           <div class="muted" style="font-size:11.5px;margin-top:8px;" id="import-agendamentos-status"></div>
         </div>
+        <div class="card">
+          <h3>Atendimentos já feitos (importar em lote)</h3>
+          <p class="muted" style="font-size:12.5px;margin:-8px 0 12px;">Para trazer um histórico de atendimentos de outro controle. Colunas: Matrícula, Data (AAAA-MM-DD), Hora chegada (HH:MM), Hora conclusão (HH:MM), Tipo de atendimento, Técnico, Prioridade (Sim/Não), Histórico/Motivo, Processo SEI n°. A pessoa deve já existir na base de Servidores (por Matrícula). Todos entram como "Concluído", direto no histórico — não passam pela fila de espera.</p>
+          <input type="file" id="import-atendimentos-file" accept=".xlsx,.xls,.csv" onchange="importarAtendimentosXLSX(this.files[0])">
+          <div class="muted" style="font-size:11.5px;margin-top:8px;" id="import-atendimentos-status"></div>
+        </div>
       </div>
 
       <div class="grid cols-2" style="margin-top:18px;">
@@ -769,6 +825,18 @@
           <div class="field"><label for="cfg-assinatura-nome">Nome de quem assina</label><input type="text" id="cfg-assinatura-nome" oninput="upperInput(this)"></div>
           <div class="field"><label for="cfg-assinatura-cargo">Cargo de quem assina</label><input type="text" id="cfg-assinatura-cargo"></div>
           <button class="btn teal block" onclick="salvarAssinaturaPadrao()">Salvar assinatura padrão</button>
+        </div>
+        <div class="card">
+          <h3>Mensagens da tela de boas-vindas</h3>
+          <p class="muted" style="font-size:12.5px;margin-top:-6px;">Aparecem para todos, logo após o login, na tela de saudação do dia.</p>
+          <div class="field"><label for="msg-boasvindas-texto">Nova mensagem</label><textarea id="msg-boasvindas-texto" rows="2" placeholder="Ex: Reunião de equipe às 14h na sala 2."></textarea></div>
+          <button class="btn teal block" onclick="publicarMensagemBoasVindas()">Publicar mensagem</button>
+          <div id="lista-mensagens-boasvindas" style="margin-top:12px;"></div>
+        </div>
+        <div class="card" id="card-zerar-atendimentos" style="border-left:4px solid #b5482a;display:none;">
+          <h3>&#9888;&nbsp; Zerar atendimentos (início de uso)</h3>
+          <p class="muted" style="font-size:12.5px;margin-top:-6px;">Apaga toda a fila e o histórico de atendimentos (Recepção, Painel, Consulta e Relatórios ficam vazios) e reinicia a numeração das senhas a partir de T-001. <b>Não mexe</b> em servidores, técnicos, unidades escolares, tipos, vínculos nem agendamentos — só em atendimentos. Ação exclusiva do administrador, não pode ser desfeita.</p>
+          <button class="btn block" style="background:#b5482a;color:#fff;" onclick="zerarAtendimentos()">Zerar todos os atendimentos</button>
         </div>
       </div>
 
@@ -819,10 +887,6 @@
 
     <!-- ============ RELATÓRIOS ============ -->
     <section class="view" id="view-relatorios">
-      <div class="dashboard-orgao">
-        <img alt="Emblema do Estado da Bahia" id="dash-emblema">
-        <div class="txt">GOVERNO DO ESTADO DA BAHIA · SECRETARIA DA EDUCAÇÃO - SEC · SUPERINTENDÊNCIA DE PESSOAL – SUDEPE · DIRETORIA DE RECURSOS HUMANOS – DIREH · COORDENAÇÃO DE PROVIMENTO E MOVIMENTAÇÃO – CPM</div>
-      </div>
       <div class="pagehead">
         <div>
           <div class="eyebrow">Indicadores</div>
@@ -932,8 +996,32 @@ const TURNOS = ['MATUTINO','MATUTINO/VESPERTINO','MATUTINO/NOTURNO','VESPERTINO'
 const EMBLEMA_B64 = 'data:image/jpeg;base64,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';
 (function(){ const el = document.getElementById('dash-emblema'); if(el) el.src = EMBLEMA_B64; })();
 
-const SISTEMA_VERSAO = '4.9';
+const SISTEMA_VERSAO = '4.16';
 const HISTORICO_VERSOES = [
+  { versao:'4.16', data:'2026-07-27', mudancas: [
+    'Novo botão único "✎ Editar técnico" em Técnicos, permitindo alterar todos os dados de um técnico já cadastrado de uma vez (nome, cargo/função, mesa, e-mail, data de nascimento e usuário de acesso) — antes só dava para corrigir cargo/mesa e e-mail separadamente. A senha continua sendo alterada por "Redefinir senha", separadamente.'
+  ]},
+  { versao:'4.15', data:'2026-07-27', mudancas: [
+    'Nova tela de boas-vindas em tela cheia, logo após o login: saudação de acordo com o horário (Bom dia/Boa tarde/Boa noite), dia da semana, data completa e um desejo de ótimo dia de trabalho, com um visual novo (gradiente, formas decorativas). O administrador pode publicar mensagens personalizadas em Configurações, que aparecem para todos nessa tela.',
+    'Cadastro de técnico passou a exigir a data de nascimento. No dia do aniversário do técnico, a tela de boas-vindas mostra uma mensagem especial de parabéns.'
+  ]},
+  { versao:'4.14', data:'2026-07-27', mudancas: [
+    'Removido o cabeçalho institucional horizontal que aparecia no topo da tela de Relatórios.',
+    'Novo indicador de "Ano de operação" no topo da Recepção (hoje 2026). Ao virar o ano, o administrador recebe um aviso perguntando se quer zerar os atendimentos e recomeçar do zero — nada é apagado sem confirmação.',
+    'Nova importação em lote de atendimentos já feitos (histórico), em Configurações — útil para trazer registros de outro controle. Entram direto como "Concluído", sem passar pela fila.'
+  ]},
+  { versao:'4.13', data:'2026-07-27', mudancas: [
+    'Nova opção em Configurações (só para administrador): "Zerar todos os atendimentos" — apaga fila e histórico de atendimentos e reinicia a numeração das senhas em T-001, sem mexer em servidores, técnicos, unidades escolares, tipos, vínculos ou agendamentos. Pede confirmação dupla antes de executar.'
+  ]},
+  { versao:'4.12', data:'2026-07-27', mudancas: [
+    'Campo "Modalidade" (no cadastro de servidor e no Ofício de encaminhamento) deixou de ser um menu fixo com só "Seletivo"/"Emergencial" e virou texto livre — agora qualquer valor da base (Licenciado, Não Licenciado, ou qualquer outro) aparece pré-preenchido corretamente. Removido também o "(se REDA)" do rótulo, já que a modalidade agora vale pra qualquer vínculo.'
+  ]},
+  { versao:'4.11', data:'2026-07-27', mudancas: [
+    'Boletim de Atendimento e Ofício de Encaminhamento agora podem ser editados (não só reimpressos) enquanto o atendimento estiver em andamento — reabrir o documento já vem preenchido com o que foi salvo da última vez. Depois que o atendimento é concluído, só o administrador pode editar esses documentos; técnicos continuam podendo ver e reimprimir normalmente.'
+  ]},
+  { versao:'4.10', data:'2026-07-27', mudancas: [
+    'Ofício de encaminhamento: a modalidade do servidor agora aparece sempre que estiver preenchida na base, seja o vínculo REDA, Efetivo ou qualquer outro — antes só aparecia para REDA.'
+  ]},
   { versao:'4.9', data:'2026-07-27', mudancas: [
     'Ofício de encaminhamento para cargos que não são Professor: o texto agora começa com "Encaminhamos o servidor/a servidora, NOME, matrícula n°..." e só depois traz os detalhes do cargo — diferente da estrutura usada para Professor, que continua igual. O campo "Vaga" também passou a se chamar "Detalhamento" nesses casos (no formulário e na impressão).'
   ]},
@@ -1194,6 +1282,8 @@ function dbDefault(){
     cards: [],
     configPainel: { volumeSom: 'medio' },
     configAssinatura: { nome: 'MANOEL VIDAL COLAÇO NETO', cargo: 'Coordenador Técnico' },
+    anoOperacao: new Date().getFullYear(),
+    mensagensBoasVindas: [],
     ticketSeq: 0,
     ticketDate: ''
   };
@@ -1208,6 +1298,8 @@ function aplicarMigracoes(parsed){
   if(!parsed.unidadesEscolares) parsed.unidadesEscolares = [];
   if(!parsed.externos) parsed.externos = [];
   if(!parsed.configAssinatura) parsed.configAssinatura = { nome: 'MANOEL VIDAL COLAÇO NETO', cargo: 'Coordenador Técnico' };
+  if(!parsed.anoOperacao) parsed.anoOperacao = new Date().getFullYear();
+  if(!parsed.mensagensBoasVindas) parsed.mensagensBoasVindas = [];
   if(!parsed.agendamentos) parsed.agendamentos = [];
   if(parsed.agendamentoSeq===undefined) parsed.agendamentoSeq = 0;
   if(!parsed.avisos) parsed.avisos = [];
@@ -1475,7 +1567,49 @@ function permissoesAtuais(){
   return tec ? tec.permissoes : permDefault();
 }
 function entrarNoApp(){
+  mostrarTelaBoasVindas();
+}
+function mostrarTelaBoasVindas(){
+  const agora = new Date();
+  const hora = agora.getHours();
+  let saudacao, icone;
+  if(hora < 12){ saudacao = 'Bom dia'; icone = '&#9728;&#65039;'; }
+  else if(hora < 18){ saudacao = 'Boa tarde'; icone = '&#127780;&#65039;'; }
+  else { saudacao = 'Boa noite'; icone = '&#127769;'; }
+  const diasSemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const dataTexto = diasSemana[agora.getDay()] + ', ' + agora.getDate() + ' de ' + MESES_EXTENSO[agora.getMonth()] + ' de ' + agora.getFullYear();
+
+  document.getElementById('welcome-emblema').src = EMBLEMA_B64;
+  document.getElementById('welcome-icone').innerHTML = icone;
+  document.getElementById('welcome-saudacao').textContent = saudacao + ',';
+  document.getElementById('welcome-nome').textContent = (currentUser.nome||'').split(' ')[0] || currentUser.nome;
+  document.getElementById('welcome-data').textContent = dataTexto;
+
+  let htmlAniversario = '';
+  if(currentUser.tipo==='tecnico'){
+    const tec = db.tecnicos.find(t=>t.id===currentUser.id);
+    if(tec && tec.nascimento){
+      const nasc = new Date(tec.nascimento + 'T00:00:00');
+      if(nasc.getDate()===agora.getDate() && nasc.getMonth()===agora.getMonth()){
+        htmlAniversario = `&#127881;&#127874; Feliz aniversário, ${escapeHtml(tec.nome.split(' ')[0])}! Que seu dia seja tão especial quanto você. &#127880;`;
+      }
+    }
+  }
+  const elAniv = document.getElementById('welcome-aniversario');
+  elAniv.innerHTML = htmlAniversario;
+  elAniv.style.display = htmlAniversario ? 'block' : 'none';
+
+  const msgs = db.mensagensBoasVindas || [];
+  document.getElementById('welcome-mensagens').innerHTML = msgs.map(m=>`<div class="welcome-msg">${escapeHtml(m.texto)}</div>`).join('');
+
   document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('welcome-screen').style.display = 'block';
+}
+function fecharBoasVindasEEntrar(){
+  document.getElementById('welcome-screen').style.display = 'none';
+  finalizarEntrada();
+}
+function finalizarEntrada(){
   document.getElementById('app-root').style.display = 'flex';
   document.getElementById('lg-erro').style.display = 'none';
   document.getElementById('versao-chip').textContent = SISTEMA_VERSAO;
@@ -1502,6 +1636,33 @@ function entrarNoApp(){
   if(currentUser.tipo==='tecnico') sessionStorage.setItem('painel_tecnico_atual', currentUser.id);
   if(currentUser.tipo==='admin' && db.tecnicos.length===0){
     setTimeout(()=> toast('Nenhum técnico cadastrado ainda neste banco de dados. Cadastre em "Técnicos", ou importe um backup em "Configurações" → Backup.'), 600);
+  }
+  if(currentUser.tipo==='admin'){
+    setTimeout(verificarVirosAno, 800);
+  }
+}
+function atualizarBadgeAno(){
+  const el = document.getElementById('rec-ano-atual');
+  if(el) el.textContent = db.anoOperacao || new Date().getFullYear();
+}
+function verificarVirosAno(){
+  db = loadDB();
+  const anoAtual = new Date().getFullYear();
+  const anoOp = db.anoOperacao || anoAtual;
+  if(anoAtual <= anoOp) return;
+  const totalAtendimentos = db.atendimentos.length;
+  const zerar = confirm('Um novo ano começou (' + anoAtual + ')! Você tinha ' + totalAtendimentos + ' atendimento(s) registrado(s) em ' + anoOp + '.\n\nDeseja zerar os atendimentos agora e começar ' + anoAtual + ' do zero (as senhas voltam a contar de T-001)?\n\nSe preferir decidir depois, clique em Cancelar — o sistema vai perguntar de novo no próximo login.');
+  if(zerar){
+    db.atendimentos = [];
+    db.ticketSeq = 0;
+    db.ticketDate = '';
+    db.anoOperacao = anoAtual;
+    saveDB(db);
+    toast('Ano ' + anoAtual + ' iniciado com os atendimentos zerados.');
+    atualizarBadgeAno();
+    const activeView = document.querySelector('.view.active')?.id;
+    if(activeView==='view-recepcao') renderFilaRecepcao();
+    if(activeView==='view-painel') renderPainel();
   }
 }
 
@@ -1646,9 +1807,9 @@ function goToView(name){
   document.getElementById('view-'+name).classList.add('active');
   if(name==='painel'){ renderPainel(); }
   if(name==='tecnicos') renderTecnicos();
-  if(name==='tipos'){ renderTipos(); renderVinculos(); renderUEE(); renderTodosAvisos(); renderTodosCards(); aplicarVolumeSomSelects(); carregarAssinaturaPadraoForm(); }
+  if(name==='tipos'){ renderTipos(); renderVinculos(); renderUEE(); renderTodosAvisos(); renderTodosCards(); aplicarVolumeSomSelects(); carregarAssinaturaPadraoForm(); renderMensagensBoasVindas(); const cardZerar = document.getElementById('card-zerar-atendimentos'); if(cardZerar) cardZerar.style.display = (currentUser && currentUser.tipo==='admin') ? 'block' : 'none'; }
   if(name==='relatorios'){ initRelatorioDefaults(); renderAuditoriaAvisos(); }
-  if(name==='recepcao'){ refreshTipoSelects(); refreshVinculoSelect(); renderFilaRecepcao(); }
+  if(name==='recepcao'){ refreshTipoSelects(); refreshVinculoSelect(); renderFilaRecepcao(); atualizarBadgeAno(); }
   if(name==='agendamento'){ initAgendamentoDefaults(); }
 }
 function toast(msg){
@@ -2378,7 +2539,9 @@ function mostrarDetalheConsulta(id){
               ${(a.boletimGerado || a.oficioGerado || a.atestadoGerado) ? `
               <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
                 ${a.boletimGerado? `<button class="btn ghost sm" onclick="reimprimirBoletim('${a.id}')" title="Gerado em ${fmtDataHora(a.boletimGerado.geradoEm)} por ${escapeHtml(a.boletimGerado.geradoPor)}">&#128196; Boletim gerado — ver/imprimir</button>` : ''}
+                ${a.boletimGerado && (a.status!=='concluido' || (currentUser && currentUser.tipo==='admin'))? `<button class="btn ghost sm" onclick="abrirBoletim('${a.id}')">&#9998; Editar boletim</button>` : ''}
                 ${a.oficioGerado? `<button class="btn ghost sm" onclick="reimprimirOficio('${a.id}')" title="Gerado em ${fmtDataHora(a.oficioGerado.geradoEm)} por ${escapeHtml(a.oficioGerado.geradoPor)}">&#128231; Ofício gerado — ver/imprimir</button>` : ''}
+                ${a.oficioGerado && (a.status!=='concluido' || (currentUser && currentUser.tipo==='admin'))? `<button class="btn ghost sm" onclick="abrirOficioEncaminhamento('${a.id}')">&#9998; Editar ofício</button>` : ''}
                 ${a.atestadoGerado? `<button class="btn ghost sm" onclick="reimprimirAtestado('${a.id}')" title="Gerado em ${fmtDataHora(a.atestadoGerado.geradoEm)} por ${escapeHtml(a.atestadoGerado.geradoPor)}">&#128203; Atestado gerado — ver/imprimir</button>` : ''}
               </div>` : '<div class="muted" style="font-size:11px;margin-top:6px;">Nenhum documento gerado neste atendimento.</div>'}
             </div>`).join('')
@@ -2423,19 +2586,21 @@ function salvarTecnico(){
   const area = document.getElementById('tec-area').value.trim();
   const mesa = document.getElementById('tec-mesa').value.trim();
   const email = document.getElementById('tec-email').value.trim();
+  const nascimento = document.getElementById('tec-nascimento').value;
   const usuario = document.getElementById('tec-user').value.trim();
   const senha = document.getElementById('tec-pass').value;
   const senha2 = document.getElementById('tec-pass2').value;
   if(!nome || !usuario || !senha || !email){ toast('Informe nome, e-mail, usuário e senha do técnico.'); return; }
+  if(!nascimento){ toast('Informe a data de nascimento do técnico.'); return; }
   if(senha !== senha2){ toast('As senhas digitadas não são iguais. Confira e tente novamente.'); return; }
   if(senha.length < 4){ toast('Use uma senha com pelo menos 4 caracteres.'); return; }
   if(db.tecnicos.some(t=>t.usuario.toLowerCase()===usuario.toLowerCase())){ toast('Já existe um técnico com este usuário.'); return; }
   const perms = {};
   Object.keys(PERM_LABELS).forEach(k=>{ perms[k] = document.getElementById('novo-'+k).checked; });
-  db.tecnicos.push({ id: uid('tec'), nome, area, mesa, email, ativo:true, usuario, senha, permissoes: perms });
+  db.tecnicos.push({ id: uid('tec'), nome, area, mesa, email, nascimento, ativo:true, usuario, senha, permissoes: perms });
   saveDB(db);
   document.getElementById('tec-nome').value=''; document.getElementById('tec-area').value=''; document.getElementById('tec-mesa').value='';
-  document.getElementById('tec-email').value='';
+  document.getElementById('tec-email').value=''; document.getElementById('tec-nascimento').value='';
   document.getElementById('tec-user').value=''; document.getElementById('tec-pass').value=''; document.getElementById('tec-pass2').value='';
   document.getElementById('tec-perm-novo').innerHTML = permGridHTML(permDefault(), 'novo');
   renderTecnicos();
@@ -2452,8 +2617,7 @@ function renderTecnicos(){
           <div><b>${escapeHtml(t.nome)}</b><div class="muted" style="font-size:11.5px;">${escapeHtml(t.area||'Geral')} ${t.mesa? '&middot; Mesa '+escapeHtml(t.mesa):''} &middot; usuário: ${escapeHtml(t.usuario)} ${t.email? '&middot; '+escapeHtml(t.email):''} ${t.ativo? '' : '· inativo'}</div></div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn ghost sm" onclick="abrirEditarCargoMesa('${t.id}')">Editar cargo/mesa</button>
-          <button class="btn ghost sm" onclick="abrirEditarEmailTecnico('${t.id}')">Editar e-mail</button>
+          <button class="btn ghost sm" onclick="abrirEditarTecnicoCompleto('${t.id}')">&#9998; Editar técnico</button>
           <button class="btn ghost sm" onclick="abrirRedefinirSenhaAdmin('${t.id}')">Redefinir senha</button>
           <button class="btn ghost sm" onclick="toggleTecnico('${t.id}')">${t.ativo? 'Desativar':'Ativar'}</button>
           <button class="btn ghost sm" onclick="removerTecnico('${t.id}')">Remover</button>
@@ -2488,42 +2652,46 @@ function removerTecnico(id){
 /* ============================================================
    SENHA — redefinir (admin), alterar (técnico), recuperar (esqueci)
    ============================================================ */
-function abrirEditarCargoMesa(tecId){
+function abrirEditarTecnicoCompleto(tecId){
   const t = db.tecnicos.find(x=>x.id===tecId); if(!t) return;
   const body = `
-    <p class="muted" style="font-size:12.5px;margin-top:0;">Corrija o cargo/função e o número da mesa de <b>${escapeHtml(t.nome)}</b>. A mesa aparece no painel público quando este técnico chama alguém.</p>
-    <div class="field"><label for="ecm-area">Cargo/Função</label><input type="text" id="ecm-area" value="${escapeHtml(t.area||'')}" oninput="upperInput(this)"></div>
-    <div class="field"><label for="ecm-mesa">Número da mesa</label><input type="text" id="ecm-mesa" value="${escapeHtml(t.mesa||'')}"></div>`;
-  const foot = `<button class="btn secondary" onclick="fecharModal()">Cancelar</button><button class="btn brick" onclick="confirmarEditarCargoMesa('${tecId}')">Salvar</button>`;
-  abrirModal('Editar cargo/mesa — ' + t.nome, body, foot);
+    <p class="muted" style="font-size:12.5px;margin-top:0;">Altere qualquer dado cadastrado de <b>${escapeHtml(t.nome)}</b>. A senha é alterada separadamente, em "Redefinir senha".</p>
+    <div class="field"><label for="et-nome">Nome</label><input type="text" id="et-nome" value="${escapeHtml(t.nome||'')}" oninput="upperInput(this)"></div>
+    <div class="row">
+      <div class="field"><label for="et-area">Cargo/Função</label><input type="text" id="et-area" value="${escapeHtml(t.area||'')}" oninput="upperInput(this)"></div>
+      <div class="field"><label for="et-mesa">Número da mesa</label><input type="text" id="et-mesa" value="${escapeHtml(t.mesa||'')}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="et-email">E-mail</label><input type="email" id="et-email" value="${escapeHtml(t.email||'')}" oninput="this.value=this.value.toLowerCase()"></div>
+      <div class="field"><label for="et-nascimento">Data de nascimento</label><input type="date" id="et-nascimento" value="${escapeHtml(t.nascimento||'')}"></div>
+    </div>
+    <div class="field"><label for="et-usuario">Usuário de acesso</label><input type="text" id="et-usuario" value="${escapeHtml(t.usuario||'')}" oninput="this.value=this.value.toLowerCase()"></div>
+    <div class="muted" id="et-erro" style="font-size:12px;color:var(--brick-600);display:none;"></div>`;
+  const foot = `<button class="btn secondary" onclick="fecharModal()">Cancelar</button><button class="btn brick" onclick="confirmarEditarTecnicoCompleto('${tecId}')">Salvar alterações</button>`;
+  abrirModal('Editar técnico — ' + t.nome, body, foot);
 }
-function confirmarEditarCargoMesa(tecId){
+function confirmarEditarTecnicoCompleto(tecId){
   const t = db.tecnicos.find(x=>x.id===tecId); if(!t) return;
-  t.area = document.getElementById('ecm-area').value.trim();
-  t.mesa = document.getElementById('ecm-mesa').value.trim();
+  const erro = document.getElementById('et-erro');
+  const nome = document.getElementById('et-nome').value.trim();
+  const email = document.getElementById('et-email').value.trim();
+  const nascimento = document.getElementById('et-nascimento').value;
+  const usuario = document.getElementById('et-usuario').value.trim();
+  if(!nome){ erro.textContent='Informe o nome.'; erro.style.display='block'; return; }
+  if(!email || !email.includes('@')){ erro.textContent='Informe um e-mail válido.'; erro.style.display='block'; return; }
+  if(!nascimento){ erro.textContent='Informe a data de nascimento.'; erro.style.display='block'; return; }
+  if(!usuario){ erro.textContent='Informe o usuário de acesso.'; erro.style.display='block'; return; }
+  if(db.tecnicos.some(x=>x.id!==tecId && x.usuario.toLowerCase()===usuario.toLowerCase())){ erro.textContent='Já existe outro técnico com este usuário.'; erro.style.display='block'; return; }
+  t.nome = nome;
+  t.area = document.getElementById('et-area').value.trim();
+  t.mesa = document.getElementById('et-mesa').value.trim();
+  t.email = email;
+  t.nascimento = nascimento;
+  t.usuario = usuario;
   saveDB(db);
   fecharModal();
   renderTecnicos();
   toast('Dados de ' + t.nome + ' atualizados.');
-}
-function abrirEditarEmailTecnico(tecId){
-  const t = db.tecnicos.find(x=>x.id===tecId); if(!t) return;
-  const body = `
-    <p class="muted" style="font-size:12.5px;margin-top:0;">Corrija o e-mail cadastrado de <b>${escapeHtml(t.nome)}</b>. Esse endereço é usado na recuperação de senha.</p>
-    <div class="field"><label for="ee-email">E-mail</label><input type="email" id="ee-email" value="${escapeHtml(t.email||'')}" oninput="this.value=this.value.toLowerCase()"></div>
-    <div class="muted" id="ee-erro" style="font-size:12px;color:var(--brick-600);display:none;"></div>`;
-  const foot = `<button class="btn secondary" onclick="fecharModal()">Cancelar</button><button class="btn brick" onclick="confirmarEditarEmailTecnico('${tecId}')">Salvar e-mail</button>`;
-  abrirModal('Editar e-mail — ' + t.nome, body, foot);
-}
-function confirmarEditarEmailTecnico(tecId){
-  const email = document.getElementById('ee-email').value.trim();
-  const erro = document.getElementById('ee-erro');
-  if(!email || !email.includes('@')){ erro.textContent='Informe um e-mail válido.'; erro.style.display='block'; return; }
-  const t = db.tecnicos.find(x=>x.id===tecId); if(!t) return;
-  t.email = email; saveDB(db);
-  fecharModal();
-  renderTecnicos();
-  toast('E-mail de ' + t.nome + ' atualizado.');
 }
 function abrirRedefinirSenhaAdmin(tecId){
   const t = db.tecnicos.find(x=>x.id===tecId); if(!t) return;
@@ -2852,6 +3020,54 @@ function importarAgendamentosXLSX(file){
   };
   reader.readAsArrayBuffer(file);
 }
+function importarAtendimentosXLSX(file){
+  if(!file) return;
+  const status = document.getElementById('import-atendimentos-status');
+  status.textContent = 'Lendo arquivo...';
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const wb = XLSX.read(e.target.result, {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {defval:''});
+      let novos=0, ignorados=0;
+      const autor = currentUser ? currentUser.nome : 'Sistema';
+      rows.forEach((r,i)=>{
+        const map = {};
+        Object.keys(r).forEach(k=> map[normalizarCabecalho(k)] = String(r[k]).trim());
+        const matricula = map['MATRICULA'] || '';
+        const data = map['DATA'] || '';
+        const horaChegada = map['HORA CHEGADA'] || '00:00';
+        const horaConclusao = map['HORA CONCLUSAO'] || horaChegada;
+        if(!matricula || !data){ ignorados++; return; }
+        const pessoa = db.profissionais.find(p=> onlyDigits(p.matricula)===onlyDigits(matricula) && onlyDigits(matricula).length>0);
+        if(!pessoa){ ignorados++; return; }
+        const tipo = db.tipos.find(t=> t.nome.toLowerCase()===(map['TIPO DE ATENDIMENTO']||'').toLowerCase());
+        const tecnico = db.tecnicos.find(t=> t.nome.toLowerCase()===(map['TECNICO']||'').toLowerCase());
+        const chegadaEm = new Date(data + 'T' + (horaChegada||'00:00') + ':00').toISOString();
+        const concluidoEm = new Date(data + 'T' + (horaConclusao||horaChegada||'00:00') + ':00').toISOString();
+        db.atendimentos.push({
+          id: uid('at'), ticket: 'H-' + String(db.atendimentos.length + 1).padStart(5,'0'),
+          profissionalId: pessoa.id, tipoAtendimentoId: tipo? tipo.id : null,
+          prioridade: /^S/i.test(map['PRIORIDADE']||''), diretorUnidade: false,
+          tecnicoId: tecnico? tecnico.id : null, status: 'concluido',
+          chegadaEm, iniciadoEm: chegadaEm, concluidoEm,
+          historico: map['HISTORICO/MOTIVO'] || map['HISTORICO'] || map['MOTIVO'] || '',
+          motivo: map['HISTORICO/MOTIVO'] || map['MOTIVO'] || '',
+          numeroSEI: map['PROCESSO SEI N°']||map['PROCESSO SEI N']||map['PROCESSO SEI']||'',
+          transferencias: [], boletimGerado: null, oficioGerado: null, atestadoGerado: null
+        });
+        novos++;
+      });
+      saveDB(db);
+      status.textContent = novos + ' atendimento(s) importado(s), ' + ignorados + ' ignorado(s) (dados faltando ou servidor não encontrado pela matrícula).';
+      toast('Atendimentos importados para o histórico.');
+    }catch(err){
+      status.textContent = 'Erro ao ler o arquivo: ' + err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
 function renderUEE(filtro){
   const el = document.getElementById('uee-lista');
   if(!el) return;
@@ -3044,6 +3260,53 @@ function salvarAssinaturaPadrao(){
   db.configAssinatura = { nome, cargo };
   saveDB(db);
   toast('Assinatura padrão atualizada. Vale para o Atestado a partir de agora e como sugestão no próximo Ofício.');
+}
+function publicarMensagemBoasVindas(){
+  const texto = document.getElementById('msg-boasvindas-texto').value.trim();
+  if(!texto){ toast('Escreva uma mensagem.'); return; }
+  db = loadDB();
+  if(!db.mensagensBoasVindas) db.mensagensBoasVindas = [];
+  db.mensagensBoasVindas.unshift({ id: uid('mbv'), texto, autor: currentUser? currentUser.nome : 'Sistema', criadoEm: new Date().toISOString() });
+  saveDB(db);
+  document.getElementById('msg-boasvindas-texto').value = '';
+  renderMensagensBoasVindas();
+  toast('Mensagem publicada.');
+}
+function renderMensagensBoasVindas(){
+  const el = document.getElementById('lista-mensagens-boasvindas');
+  if(!el) return;
+  const msgs = db.mensagensBoasVindas || [];
+  if(msgs.length===0){ el.innerHTML = '<div class="empty" style="padding:10px;"><span class="ico">&#128172;</span>Nenhuma mensagem ativa.</div>'; return; }
+  el.innerHTML = msgs.map(m=>`
+    <div class="list-item">
+      <div style="font-size:12.5px;">${escapeHtml(m.texto)}<div class="muted" style="font-size:10.5px;">${escapeHtml(m.autor)} &middot; ${fmtDataHora(m.criadoEm)}</div></div>
+      <button class="btn ghost sm" onclick="removerMensagemBoasVindas('${m.id}')">Remover</button>
+    </div>`).join('');
+}
+function removerMensagemBoasVindas(id){
+  db = loadDB();
+  db.mensagensBoasVindas = (db.mensagensBoasVindas||[]).filter(m=>m.id!==id);
+  saveDB(db);
+  renderMensagensBoasVindas();
+}
+function zerarAtendimentos(){
+  if(!currentUser || currentUser.tipo!=='admin'){ toast('Só o administrador pode zerar os atendimentos.'); return; }
+  db = loadDB();
+  const total = db.atendimentos.length;
+  if(!confirm('Isso vai apagar TODOS os ' + total + ' atendimentos (fila, histórico e relatórios) e reiniciar a numeração das senhas em T-001.\n\nServidores, técnicos, unidades escolares, tipos, vínculos e agendamentos NÃO são afetados.\n\nEssa ação não pode ser desfeita. Deseja continuar?')){
+    return;
+  }
+  if(!confirm('Tem certeza mesmo? Essa é a última confirmação antes de apagar os ' + total + ' atendimentos.')){
+    return;
+  }
+  db.atendimentos = [];
+  db.ticketSeq = 0;
+  db.ticketDate = '';
+  db.anoOperacao = new Date().getFullYear();
+  saveDB(db);
+  toast('Atendimentos zerados. O sistema está pronto para começar.');
+  atualizarBadgeAno();
+  renderFilaRecepcao();
 }
 function exportarBackupCompleto(){
   db = loadDB();
@@ -3257,7 +3520,9 @@ function abrirDetalheAtendimentoAnterior(atendimentoId){
     ${(o.boletimGerado || o.oficioGerado || o.atestadoGerado) ? `
     <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;">
       ${o.boletimGerado? `<button class="btn secondary sm" onclick="reimprimirBoletim('${o.id}')">&#128196; Boletim gerado — ver/imprimir</button>` : ''}
+      ${o.boletimGerado && (o.status!=='concluido' || (currentUser && currentUser.tipo==='admin'))? `<button class="btn secondary sm" onclick="abrirBoletim('${o.id}')">&#9998; Editar boletim</button>` : ''}
       ${o.oficioGerado? `<button class="btn secondary sm" onclick="reimprimirOficio('${o.id}')">&#128231; Ofício gerado — ver/imprimir</button>` : ''}
+      ${o.oficioGerado && (o.status!=='concluido' || (currentUser && currentUser.tipo==='admin'))? `<button class="btn secondary sm" onclick="abrirOficioEncaminhamento('${o.id}')">&#9998; Editar ofício</button>` : ''}
       ${o.atestadoGerado? `<button class="btn secondary sm" onclick="reimprimirAtestado('${o.id}')">&#128203; Atestado gerado — ver/imprimir</button>` : ''}
     </div>` : ''}
   `;
@@ -3926,10 +4191,10 @@ function textoCargoGenero(cargo, sexo){
   return c;
 }
 function textoVinculoGenero(vinculo, modalidade, sexo){
+  let mod = (modalidade||'').trim();
+  if(mod && sexo==='F') mod = flexionarFeminino(mod);
   const reda = /reda/i.test(vinculo||'');
   if(reda){
-    let mod = (modalidade||'').trim();
-    if(sexo==='F') mod = flexionarFeminino(mod);
     return mod ? ('REDA ' + mod) : 'REDA';
   }
   let v = (vinculo||'').trim().toLowerCase();
@@ -3937,7 +4202,7 @@ function textoVinculoGenero(vinculo, modalidade, sexo){
     if(/or$/.test(v)) v = v.replace(/or$/,'ora');
     else if(/o$/.test(v)) v = v.replace(/o$/,'a');
   }
-  return v;
+  return mod ? (v + (v? ' ' : '') + mod) : v;
 }
 
 let oficioState = null;
@@ -3945,6 +4210,16 @@ function abrirOficioEncaminhamento(atendimentoId){
   db = loadDB();
   const a = db.atendimentos.find(x=>x.id===atendimentoId);
   if(!a){ toast('Atendimento não encontrado.'); return; }
+  if(a.status==='concluido' && (!currentUser || currentUser.tipo!=='admin')){
+    toast('Este atendimento já foi concluído. Só o administrador pode alterar os documentos depois de concluído.');
+    return;
+  }
+  if(a.oficioGerado && a.oficioGerado.estado){
+    oficioState = JSON.parse(JSON.stringify(a.oficioGerado.estado));
+    oficioState.atendimentoId = atendimentoId;
+    renderOficioForm();
+    return;
+  }
   const p = pessoaDoAtendimento(a) || {};
   const assin = db.configAssinatura || { nome: 'MANOEL VIDAL COLAÇO NETO', cargo: 'Coordenador Técnico' };
   oficioState = {
@@ -3995,12 +4270,8 @@ function renderOficioForm(){
       <div class="field"><label for="of-cargo">Cargo</label><input type="text" id="of-cargo" value="${escapeHtml(s.cargo)}" oninput="oficioState.cargo=this.value" onblur="renderOficioForm()" placeholder="Ex: Professor"></div>
       <div class="field"><label for="of-vinculo">Vínculo</label><input type="text" id="of-vinculo" value="${escapeHtml(s.vinculo)}" oninput="oficioState.vinculo=this.value" placeholder="Ex: Efetivo ou REDA"></div>
     </div>
-    <div class="field"><label for="of-modalidade">Modalidade (se REDA)</label>
-      <select id="of-modalidade" onchange="oficioState.modalidade=this.value">
-        <option value="" ${s.modalidade===''?'selected':''}>—</option>
-        <option value="Seletivo" ${s.modalidade==='Seletivo'?'selected':''}>Seletivo</option>
-        <option value="Emergencial" ${s.modalidade==='Emergencial'?'selected':''}>Emergencial</option>
-      </select>
+    <div class="field"><label for="of-modalidade">Modalidade</label>
+      <input type="text" id="of-modalidade" value="${escapeHtml(s.modalidade)}" oninput="oficioState.modalidade=this.value" placeholder="Ex: Seletivo, Emergencial, Licenciado...">
     </div>
     <div class="divider"></div>
     ${!ehProfessorForm ? `<p class="muted" style="font-size:12px;margin-top:-4px;">Cargo diferente de Professor — o ofício sai sem o trecho de formação/licenciatura e sem a tabela de turnos, automaticamente.</p>` : ''}
@@ -4155,15 +4426,24 @@ function reimprimirAtestado(atendimentoId){
 function abrirBoletim(atendimentoId){
   const a = db.atendimentos.find(x=>x.id===atendimentoId);
   if(!a){ toast('Atendimento não encontrado.'); return; }
+  if(a.status==='concluido' && (!currentUser || currentUser.tipo!=='admin')){
+    toast('Este atendimento já foi concluído. Só o administrador pode alterar os documentos depois de concluído.');
+    return;
+  }
   const p = db.profissionais.find(x=>x.id===a.profissionalId) || {};
-  boletimState = {
-    atendimentoId,
-    data: (a.chegadaEm||new Date().toISOString()).slice(0,10),
-    motivo: a.motivo || '',
-    localExcedencia: 'lotacao',
-    linhas: [{unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}, {unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}, {unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}],
-    atendidoPor: currentUser ? currentUser.nome : ''
-  };
+  if(a.boletimGerado && a.boletimGerado.estado){
+    boletimState = JSON.parse(JSON.stringify(a.boletimGerado.estado));
+    boletimState.atendimentoId = atendimentoId;
+  } else {
+    boletimState = {
+      atendimentoId,
+      data: (a.chegadaEm||new Date().toISOString()).slice(0,10),
+      motivo: a.motivo || '',
+      localExcedencia: 'lotacao',
+      linhas: [{unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}, {unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}, {unidadeNome:'', unidadeCodigo:'', unidadeMunicipio:'', turno:''}],
+      atendidoPor: currentUser ? currentUser.nome : ''
+    };
+  }
   renderBoletimForm();
 }
 
